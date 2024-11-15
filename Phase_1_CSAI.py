@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import os
 import imageio
 from heapq import heappop, heappush
+import time
 
 # ---------------- Node and Grid Classes ----------------
 class Node:
@@ -84,7 +85,7 @@ class algorithm(Grid):
         path = np.array(path)
         for i in range(1, path.shape[0] - 1):
           plt.scatter(path[i,1], path[i,0], color="blue")
-        plt.legend()
+        # plt.legend()
         plt.title(f"Final Path - {AlGname}")
         plt.xticks([])
         plt.yticks([])
@@ -96,7 +97,7 @@ class algorithm(Grid):
         plt.scatter(self.goal[1], self.goal[0], color="red")
         all_moves = np.array(self.all_moves)
         plt.scatter(all_moves[:,1], all_moves[:,0], color="lightblue", alpha=0.5)
-        plt.legend(loc="upper right")
+        # plt.legend(loc="upper right")
         plt.title(f"Explored Nodes - {AlGname}")
         plt.xticks([])
         plt.yticks([])
@@ -126,7 +127,7 @@ class algorithm(Grid):
                 current = np.array(current_path)
                 plt.scatter(current[1:,1], current[1:,0], color="blue", label="Path")
             
-            plt.legend()
+            # plt.legend()
             plt.title(f"Path Formation {algoritmName} - Step {i}")
             plt.xticks([])
             plt.yticks([])
@@ -157,7 +158,7 @@ class algorithm(Grid):
             # the explored nodes plot
             explored = np.array(explored_nodes) # 
             plt.scatter(explored[:,1], explored[:,0],color="grey",alpha=0.5)
-            plt.legend(loc="upper right")
+            # plt.legend(loc="upper right")
             plt.title(f"Exploration of {algoritmName} in the space - Step {i}")
             plt.xticks([])
             plt.yticks([])
@@ -266,28 +267,35 @@ class algorithm(Grid):
     #===============================================================================================================
 
 
+def execute_algorithm(algorithmName, width=25, height=25, start=(0, 0), goal=(24, 24)):
 
-if __name__ == "__main__":
-    width = 25 
-    height = 25
-    start = (0,0)
-    goal = (24,24)
-    algorithmName = input('select number of algorithm: 1: BFS, 2: DFS, 3: A*')
+    print(f"Starting {algorithmName} algorithm... (algo function)")
+    start_time = time.time()
     grid = algorithm(width, height, start, goal)
-
-    if algorithmName == "1":
-        path, AlGname, all_movments = grid.bfs()
-    elif algorithmName == '2':
-        path, AlGname,all_movments = grid.dfs()
-    elif algorithmName == '3':
-        path, AlGname,all_movments = grid.astar()
-
+    if algorithmName == "BFS":
+        path, AlGname, all_movements = grid.bfs()
+    elif algorithmName == 'DFS':
+        path, AlGname, all_movements = grid.dfs()
+    # elif algorithmName == 'A*':
+   
 
     # frames that make video
-    grid.images_frames(AlGname, path,all_movments )
+    grid.images_frames(AlGname, path, all_movements)
     # video
     grid.videoFrom_images(AlGname)
     grid.videoFrom_movements(AlGname)
-    grid.visualize_path(path,AlGname) # image of result
-    print(path)
+    grid.visualize_path(path, AlGname)  # image of result
+
+    end_time = time.time()
+    print(f"{algorithmName} algorithm completed in {end_time - start_time:.2f} seconds.")
     print("Done")
+    return {
+        'exploration_video': f"{AlGname}_exploration.mp4",
+        'path_video': f"{AlGname}_path_formation.mp4",
+        'final_image': f"Final Path - {AlGname}.png"
+    }
+
+if __name__ == "__main__":
+    # testing
+    outputs = execute_algorithm()
+    print("Outputs:",outputs)

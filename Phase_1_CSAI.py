@@ -4,6 +4,9 @@ import os
 import imageio
 from heapq import heappop, heappush
 import time
+import tkinter as tk
+from PIL import Image, ImageTk
+import subprocess
 
 # ---------------- Node and Grid Classes ----------------
 class Node:
@@ -265,7 +268,151 @@ class algorithm(Grid):
 
     #===============================================================================================================
     #===============================================================================================================
+# -------------------------------- GUI --------------------------------
+# GUI Class
+class ResultGUI:
+    def __init__(self, outputs):
+        self.outputs = outputs
+        self.root = tk.Tk()
+        self.root.title("Algorithm Visualization")
 
+        # Create variables to keep track of images
+        self.exploration_images = []
+        self.path_images = []
+        self.current_index = 0
+        self.current_images = []
+        self.image_type = 'exploration'  # 'exploration' or 'path'
+
+        # Load images
+        self.load_images()
+
+        # Create UI elements
+        self.create_widgets()
+
+    def load_images(self):
+        # Load exploration images
+        exploration_dir = self.outputs.get('exploration_images_dir')
+        if exploration_dir and os.path.isdir(exploration_dir):
+            exploration_files = sorted(os.listdir(exploration_dir))
+            for file in exploration_files:
+                if file.endswith('.png'):
+                    img_path = os.path.join(exploration_dir, file)
+                    image = Image.open(img_path)
+                    self.exploration_images.append(image)
+
+        # Load path images
+        path_dir = self.outputs.get('path_images_dir')
+        if path_dir and os.path.isdir(path_dir):
+            path_files = sorted(os.listdir(path_dir))
+            for file in path_files:
+                if file.endswith('.png'):
+                    img_path = os.path.join(path_dir, file)
+                    image = Image.open(img_path)
+                    self.path_images.append(image)
+
+        # Set current images to exploration images by default
+        self.current_images = self.exploration_images
+
+    def create_widgets(self):
+        # Create a frame for controls
+        control_frame = tk.Frame(self.root)
+        control_frame.pack(side=tk.TOP)
+
+        # Create radio buttons to select image type
+        self.image_type_var = tk.StringVar(value='exploration')
+        self.exploration_radio = tk.Radiobutton(control_frame, text="Exploration Images", variable=self.image_type_var, value='exploration', command=self.change_image_type)
+        self.exploration_radio.pack(side=tk.LEFT)
+
+        self.path_radio = tk.Radiobutton(control_frame, text="Path Images", variable=self.image_type_var, value='path', command=self.change_image_type)
+        self.path_radio.pack(side=tk.LEFT)
+
+        # Create buttons to navigate images
+        self.prev_button = tk.Button(control_frame, text="<< Previous", command=self.prev_image)
+        self.prev_button.pack(side=tk.LEFT)
+
+        self.next_button = tk.Button(control_frame, text="Next >>", command=self.next_image)
+        self.next_button.pack(side=tk.LEFT)
+
+        # Create buttons to open videos and final image
+        self.open_exploration_video_button = tk.Button(control_frame, text="Open Exploration Video", command=self.open_exploration_video)
+        self.open_exploration_video_button.pack(side=tk.LEFT)
+
+        self.open_path_video_button = tk.Button(control_frame, text="Open Path Video", command=self.open_path_video)
+        self.open_path_video_button.pack(side=tk.LEFT)
+
+        self.open_final_image_button = tk.Button(control_frame, text="Open Final Image", command=self.open_final_image)
+        self.open_final_image_button.pack(side=tk.LEFT)
+
+        # Create a canvas to display images
+        self.canvas = tk.Canvas(self.root, width=600, height=600)
+        self.canvas.pack()
+
+        # Display the first image
+        self.display_image()
+
+    def change_image_type(self):
+        self.image_type = self.image_type_var.get()
+        if self.image_type == 'exploration':
+            self.current_images = self.exploration_images
+        elif self.image_type == 'path':
+            self.current_images = self.path_images
+        self.current_index = 0
+        self.display_image()
+
+    def display_image(self):
+        # Clear the canvas
+        self.canvas.delete("all")
+        # Display the current image on the canvas
+        if self.current_images:
+            image = self.current_images[self.current_index]
+            # Resize image to fit the canvas if necessary
+            image = image.resize((600, 600), Image.ANTIALIAS)
+            self.photo = ImageTk.PhotoImage(image)
+            self.canvas.create_image(300, 300, image=self.photo)
+        else:
+            # No images to display
+            self.canvas.create_text(300, 300, text="No images to display")
+
+    def prev_image(self):
+        if self.current_images:
+            self.current_index = (self.current_index - 1) % len(self.current_images)
+            self.display_image()
+
+    def next_image(self):
+        if self.current_images:
+            self.current_index = (self.current_index + 1) % len(self.current_images)
+            self.display_image()
+
+    def open_exploration_video(self):
+        video_path = self.outputs.get('exploration_video')
+        if video_path and os.path.isfile(video_path):
+            if os.name == 'nt':
+                os.startfile(video_path)
+            elif os.name == 'posix':
+                subprocess.call(('xdg-open', video_path))
+
+    def open_path_video(self):
+        video_path = self.outputs.get('path_video')
+        if video_path and os.path.isfile(video_path):
+            if os.name == 'nt':
+                os.startfile(video_path)
+            elif os.name == 'posix':
+                subprocess.call(('xdg-open', video_path))
+
+    def open_final_image(self):
+        image_path = self.outputs.get('final_image')
+        if image_path and os.path.isfile(image_path):
+            if os.name == 'nt':
+                os.startfile(image_path)
+            elif os.name == 'posix':
+                subprocess.call(('xdg-open', image_path))
+
+    def run(self):
+        self.root.mainloop()
+
+
+
+# -------- run the app ------------
 
 def execute_algorithm(algorithmName, width=25, height=25, start=(0, 0), goal=(24, 24)):
 
@@ -296,3 +443,19 @@ def execute_algorithm(algorithmName, width=25, height=25, start=(0, 0), goal=(24
     }
 
 
+
+
+
+
+# -------- run the app ------------
+
+if __name__ == "__main__":
+    # Example usage
+    width = 25
+    height = 25
+    start = (0, 0)
+    goal = (24, 24)
+    output = algorithmName = input("Enter the name of the algorithm (BFS, DFS, A*): ")
+    execute_algorithm(algorithmName,width,height,start,goal)
+    gui = ResultGUI(output)
+    gui.run()

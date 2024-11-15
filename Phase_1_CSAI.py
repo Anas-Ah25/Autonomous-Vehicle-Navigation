@@ -295,7 +295,4 @@ def execute_algorithm(algorithmName, width=25, height=25, start=(0, 0), goal=(24
         'final_image': f"Final Path - {AlGname}.png"
     }
 
-if __name__ == "__main__":
-    # testing
-    outputs = execute_algorithm()
-    print("Outputs:",outputs)
+

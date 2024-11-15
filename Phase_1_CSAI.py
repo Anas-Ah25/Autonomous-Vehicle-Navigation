@@ -27,7 +27,7 @@ class Grid:
         self.goal = goal
         self.pattern()
 
-    def pattern(self): # complex pattern edited by gpt
+    def pattern(self): # complex pattern edited by gpt, this is what make the map ways
  
         # Outer boundaries of the grid
         self.grid[0, :] = 1
@@ -68,7 +68,7 @@ class Grid:
 # ------------------------------------------------------------------
 
 
-# ***************************************** Algorithm ***************************************************
+# +++++++++++++++++++++++++++++ Algorithm Class ++++++++++++++++++++++++++++++++++++++++++++++++++++++
 class algorithm(Grid):
     def __init__(self, width, height, start, goal):
         super().__init__(width, height, start, goal)
@@ -76,101 +76,128 @@ class algorithm(Grid):
         self.images_List = []  # Added to store image paths
 # ****************************************************************************************************
 # ***************************************** Visulizations ***************************************************  
-    
-    def visualize_path(self,path,AlGname): # image of the result
-        self.grid[self.start[0], self.start[1]] = 2  # start
-        self.grid[self.goal[0], self.goal[1]] = 3  # goal
-
-        for (x, y) in path:
-            self.grid[x, y] = 4  # path
-
-        plt.figure(figsize=(6,6))
-        plt.imshow(self.grid,cmap="gray_r")
-        plt.scatter(self.start[1],self.start[0],color="green", label="Start")
-        plt.scatter(self.goal[1],self.goal[0],color="red",label="Goal")
+    def visualize_path(self, path, AlGname): # image of the result
+        #  ---------- The final path image -------------
+        plt.imshow(self.grid, cmap="gray_r")
+        plt.scatter(self.start[1], self.start[0], color="green")
+        plt.scatter(self.goal[1], self.goal[0], color="red")
         path = np.array(path)
         for i in range(1, path.shape[0] - 1):
-            plt.scatter(path[i,1],path[i,0],color="blue")
+          plt.scatter(path[i,1], path[i,0], color="blue")
         plt.legend()
-        plt.title(f"Map - path using {AlGname}")
-        plt.axis('off')
-        # make no x or y axis appear 
+        plt.title(f"Final Path - {AlGname}")
         plt.xticks([])
         plt.yticks([])
-        plt.savefig(f"{AlGname}_image_result.png")
-        plt.show()
-        plt.pause(10)
+        plt.savefig(f"Final Path - {AlGname}.png")
+        
+        # ---------- The explored nodes image -------------
+        plt.imshow(self.grid, cmap="gray_r")
+        plt.scatter(self.start[1], self.start[0], color="green")
+        plt.scatter(self.goal[1], self.goal[0], color="red")
+        all_moves = np.array(self.all_moves)
+        plt.scatter(all_moves[:,1], all_moves[:,0], color="lightblue", alpha=0.5)
+        plt.legend(loc="upper right")
+        plt.title(f"Explored Nodes - {AlGname}")
+        plt.xticks([])
+        plt.yticks([])
+        plt.tight_layout()
+        plt.savefig(f"{AlGname}_final_result.png")
         plt.close()
+        
+        
+           
+      
 
-    def images_frames(self, algoritmName, path,all_moves): # make the frames of the final path, and other for algirtms moves
-        images_List = []
-        WholeMoves = []
+    def images_frames(self, algoritmName, path, all_moves): # make the frames of the final path, and other for algirtms moves
+        images_List = []  # for path formation
+        WholeMoves = []  # for exploration process
+        
         # ----------------------------------- Frames of the final path -----------------------------
-        for i in range(len(path)): # plot the grid with the point we moved with
+        current_path = []
+        for i in range(len(path)):
+            current_path.append(path[i])
             plt.figure(figsize=(6, 6))
             plt.imshow(self.grid, cmap="gray_r")
-            plt.scatter(self.start[1], self.start[0], color="green", label="Start")
-            plt.scatter(self.goal[1], self.goal[0], color="red", label="Goal")
-            # path till now 
-            for j in range(1,len(path)-1):  
-                plt.scatter(path[j][1], path[j][0], color="blue")
+            plt.scatter(self.start[1], self.start[0], color="green")
+            plt.scatter(self.goal[1], self.goal[0], color="red")
+            
+            # Plot current path
+            if len(current_path) > 1:
+                current = np.array(current_path)
+                plt.scatter(current[1:,1], current[1:,0], color="blue", label="Path")
+            
             plt.legend()
-            # make no x or y axis appear 
+            plt.title(f"Path Formation {algoritmName} - Step {i}")
             plt.xticks([])
             plt.yticks([])
-            plt.title(f"Map {algoritmName}-Step {i}")
-            # make a directory to save the images with each time to avoid mess 
-            os.makedirs(f"images_of {algoritmName}", exist_ok=True) #  save the directory with the name of algorithm
-            image_path = f"images_of {algoritmName}/image_{i}.png" # save the image with the name of the algorithm, from directory we made below
+            
+            os.makedirs(f"images_of_{algoritmName}_path", exist_ok=True)
+            image_path = f"images_of_{algoritmName}_path/path_{i}.png"
             plt.savefig(image_path)
-            images_List.append(image_path) # list with saved images
-            plt.close() # we dont want to show them
+            images_List.append(image_path)
+            plt.close()
 
-        self.images_List = images_List  # store the list in the class
         # ===================================================================================
-        # ------------------------------ whole algoirtm moves, trace how the algoritm move  ------------------------------
-        plt.figure(figsize=(6, 6))
-        plt.imshow(self.grid, cmap="gray_r")
-        plt.scatter(self.start[1], self.start[0], color="green", label="Start")
-        plt.scatter(self.goal[1], self.goal[0], color="red", label="Goal")
+        # ------------------------------ whole algorithm moves trace --------------------------
+        '''The main logic here is to take the (all_moves) which is the nodes that the algoritm covered
+            then plot each move, this plot is like a frame, we make the video from playing all these frames
+            after each other, so i created a directory for each type of frames saved during the code running
+            this directory has the frames, where we will take the images inside it and pass it to 'videoFrom_movements' 
+            and 'videoFrom_images', this will happen after (return images_List, WholeMoves) of the images_frames function we are in now
+            those are the lists with  paths for the frames we talked about
+        '''
+        explored_nodes = []
+        for i, move in enumerate(all_moves):
+            #  --------------- plot the move ----------------
+            explored_nodes.append(move) # add the move to the list of explored nodes
+            plt.figure(figsize=(6, 6))
+            plt.imshow(self.grid, cmap="gray_r")
+            plt.scatter(self.start[1], self.start[0], color="green")
+            plt.scatter(self.goal[1], self.goal[0], color="red")
+            # the explored nodes plot
+            explored = np.array(explored_nodes) # 
+            plt.scatter(explored[:,1], explored[:,0],color="grey",alpha=0.5)
+            plt.legend(loc="upper right")
+            plt.title(f"Exploration of {algoritmName} in the space - Step {i}")
+            plt.xticks([])
+            plt.yticks([])
+            # --------------------------------------------------------
+            # --------------- saving frames ----------------
+            os.makedirs(f"images_of_{algoritmName}_exploration",exist_ok=True)  #  directory for frames of all algoritm moves
+            AllMoves_img_path = f"images_of_{algoritmName}_exploration/explore_{i}.png" # the frame path
+            plt.savefig(AllMoves_img_path)
+            WholeMoves.append(AllMoves_img_path)
+            plt.close()
+            # ----------------------------------------------
+        self.images_List = images_List # final path frames
+        self.wholeMoves = WholeMoves # whole algoritm moves frames
+        self.all_moves = all_moves
         
-        # plot
-        for move in all_moves[:i + 1]:  
-            plt.scatter(move[1], move[0], color="blue")
-        plt.legend()
-        plt.xticks([])
-        plt.yticks([])
-        plt.title(f"Map {algoritmName} - Whole Moves Step {i}")
+        return images_List, WholeMoves
+    
 
-        os.makedirs(f"images_of {algoritmName}_path", exist_ok=True) #  directory for frames of all algoritm moves
-        image_wholeMoves_path = f"images_of {algoritmName}_path/image_wholeMoves_{i}.png" 
-        WholeMoves.append(image_wholeMoves_path)
-        self.wholeMoves = WholeMoves  # Store the list in the class
-        # ---------------------------------------------------------------------------------------------
-
-
-        return images_List,WholeMoves
-
-
+    # ===================================================================================================
+    # -------------------------------------- Video making -----------------------------------------------
+    # ===================================================================================================
     def videoFrom_images(self, algoName, fps=5):  # make the video of the final path
-        output_video_path = f"{algoName}_video.mp4"
+        output_video_path = f"{algoName}_path_formation.mp4"
         with imageio.get_writer(output_video_path, fps=fps) as video_writer:
             for image_path in self.images_List:
                 video_writer.append_data(imageio.imread(image_path))
-        print("Final Path video created successfully!")
+        print("Path formation video created successfully!")
 
-    def videoFrom_movements(self, algoName, fps=5): #  make the video of the whole algoritm moves, how it worked
-        output_video_path = f"{algoName}_WholeMoves_video.mp4"
+    def videoFrom_movements(self, algoName, fps=5): #  make the video of the whole algoritm moves
+        output_video_path = f"{algoName}_exploration.mp4"
         with imageio.get_writer(output_video_path, fps=fps) as video_writer:
             for image_path in self.wholeMoves:
                 video_writer.append_data(imageio.imread(image_path))
-        print("Algoritm movments video created successfully!")
+        print("Exploration process video created successfully!")
 # ****************************************************************************************************
    
    
    
     # ===============================================================================================================
-    # ============================== Algorithms ====================================================================
+    # ============================== Algorithms itself ====================================================================
     def bfs(self):
         queue = [self.start]
         visited = set()
@@ -196,7 +223,8 @@ class algorithm(Grid):
         while current:
             path.append(current)
             current = parent[current]
-        return path[::-1], 'BFS',all_moves
+        return path[::-1], 'BFS',all_moves # return the path and all moves made by the algorithm
+    # --------------------------------------------------------------------------------------------------------
     # -------------------- Depth First Search --------------------
     def dfs(self):
         stack = [self.start]
@@ -221,14 +249,17 @@ class algorithm(Grid):
             path.append(current)
             current = parent[current]
 
-        return path[::-1], all_moves  # Return the path and all moves made by the algorithm
+        return path[::-1],'DFS', all_moves  # return the path and all moves made by the algorithm
 
     # -------------------- A* Search --------------------
 
 
-    # ----------------------------------------------------
+    # ----------------------------------------------------------------------------
     # -------------------- Greedy Best First Search --------------------
 
+    # ----------------------------------------------------------------------------
+    # -------------------- UCS Algorithm --------------------
+    # ----------------------------------------------------------------------------
 
 
     #===============================================================================================================
@@ -256,6 +287,7 @@ if __name__ == "__main__":
     grid.images_frames(AlGname, path,all_movments )
     # video
     grid.videoFrom_images(AlGname)
-    grid.visualize_path(path,AlGname,) # image of result
+    grid.videoFrom_movements(AlGname)
+    grid.visualize_path(path,AlGname) # image of result
     print(path)
     print("Done")

@@ -4,7 +4,7 @@ from Gui import *
 from Libraries import *
 
 if __name__ == "__main__":
-    algorithms = ["BFS", "DFS","IDS","Simulated Annealing"]
+    algorithms = ["BFS", "DFS", "IDS", "Simulated Annealing", "Hill Climbing", "UCS"]
     analytics_data = {}  # Dictionary to store analytics data
 
     while True:

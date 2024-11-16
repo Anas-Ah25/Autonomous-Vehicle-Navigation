@@ -284,7 +284,89 @@ class algorithm(Grid):
         print(f"Maximum number of visited nodes during IDS: {self.max_visited_nodes}")
 
         return path[::-1], "IDS", final_moves, self.max_visited_nodes
+    
+    
+    # 2-Mohamed--->UCS
+     #------------------------UCS----------------------  
+    def ucs(self):
+        from heapq import heappop, heappush  
 
+        priority_queue = [] 
+        heappush(priority_queue, (0, self.start))
+        visited = set()
+        parent = {self.start: None}
+        costs = {self.start: 0} 
+        all_moves = []  
+        memory_max = 1  
+
+        while priority_queue:
+            memory_max = max(memory_max, len(priority_queue))  
+            current_cost, current = heappop(priority_queue)
+            all_moves.append(current)
+
+            if current == self.goal:
+                break 
+
+            visited.add(current)
+
+            
+            for dx, dy in self.Moves:
+                neighbor = (current[0] + dx, current[1] + dy)
+
+                if (0 <= neighbor[0] < self.width and
+                        0 <= neighbor[1] < self.height and
+                        self.grid[neighbor[0], neighbor[1]] == 1 and
+                        neighbor not in visited):
+                    new_cost = current_cost + 1 
+
+                    if neighbor not in costs or new_cost < costs[neighbor]:
+                        costs[neighbor] = new_cost
+                        heappush(priority_queue, (new_cost, neighbor))
+                        parent[neighbor] = current
+
+
+        path = []
+        current = self.goal
+        while current:
+            path.append(current)
+            current = parent.get(current, None)
+
+        return path[::-1], "UCS", all_moves, memory_max  
+
+  #------------------------Hill Climbing Annealing-----------------------
+
+
+# 1-Mohamed--->hill climbing
+    def hill_climbing(self):
+        current = self.start
+        path = [current]
+        all_moves = [] 
+        memory_max = 1  
+
+        while current != self.goal:
+            best_next = None
+            best_heuristic = float('inf')  
+
+            for move in self.Moves:
+                new_x, new_y = current[0] + move[0], current[1] + move[1]
+                if 0 <= new_x < self.width and 0 <= new_y < self.height and self.grid[new_x, new_y] == 1:
+                    heuristic = abs(new_x - self.goal[0]) + abs(new_y - self.goal[1])  # Manhattan distance
+                    if heuristic < best_heuristic:
+                        best_heuristic = heuristic
+                        best_next = (new_x, new_y)
+
+            if best_next is None or best_heuristic >= abs(current[0] - self.goal[0]) + abs(current[1] - self.goal[1]):
+                print("Stuck at a local maximum or goal not reachable.")
+                break
+
+            current = best_next
+            path.append(current)
+            all_moves.append(current)
+            memory_max = max(memory_max, len(all_moves))  
+
+        return path, "Hill Climbing", all_moves, memory_max
+
+ 
 
     #------------------------Simulated Annealing-----------------------
     def simulated_annealing(self, max_iterations=10000):

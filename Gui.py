@@ -163,20 +163,22 @@ def execute_algorithm(algorithmName, width=25, height=25, start=(0, 0), goal=(24
     print(f"Starting {algorithmName} algorithm...")
     start_time = time.time()
     grid = algorithm(width, height, start, goal)
+
     if algorithmName == "BFS":
         path, AlGname, all_movements, memory_max = grid.bfs()
-    elif algorithmName == 'DFS':
+    elif algorithmName == "DFS":
         path, AlGname, all_movements, memory_max = grid.dfs()
-    elif algorithmName == 'IDS':
+    elif algorithmName == "IDS":
         path, AlGname, all_movements, memory_max = grid.iterative_deepening_search()
-
-    elif algorithmName == 'Simulated Annealing':
+    elif algorithmName == "Simulated Annealing":
         path, AlGname, all_movements, memory_max = grid.simulated_annealing(max_iterations=5000)
-        
-      
+    elif algorithmName == "Hill Climbing":
+        path, AlGname, all_movements, memory_max = grid.hill_climbing()
+    elif algorithmName == "UCS":  
+        path, AlGname, all_movements, memory_max = grid.ucs()
     else:
         raise ValueError("Unknown algorithm name")
-
+    
     grid.images_frames(AlGname, path, all_movements)
     grid.videoFrom_images(AlGname)
     grid.videoFrom_movements(AlGname)

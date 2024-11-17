@@ -65,7 +65,7 @@ This project provides a **graphical user interface (GUI)** to visualize and comp
 
 ## 🚀 How It Works
 The project consists of the following key steps:
-1. **Algorithm Selection**: Users can choose from different algorithms (BFS, DFS, IDS, or Simulated Annealing) via the GUI.
+1. **Algorithm Selection**: Users can choose from different algorithms (BFS, DFS, UCS, IDS, Gready, A*, Hill Climbing, or Simulated Annealing) via the GUI.
 2. **Pathfinding Process**: Once an algorithm is selected, the program runs the chosen pathfinding algorithm on a grid. The grid is displayed in real-time, and the algorithm's progress is visualized as it explores nodes.
 3. **Output**: Once the algorithm completes, the final path and explored nodes are displayed as images or videos.
 4. **Analytics**: The performance metrics like execution time and memory usage are displayed to compare the efficiency of different algorithms.

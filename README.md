@@ -84,7 +84,7 @@ The project consists of the following key steps:
 ## 📦 Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/AlgorithmVisualizer.git
+   git clone https://github.com/Anas-Ah25/Autonomous-Vehicle-Navigation.git
    ```
 2. Navigate to the project directory:
 ```bash

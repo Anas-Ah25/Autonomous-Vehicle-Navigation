@@ -1,4 +1,5 @@
 from Node_Grid import *
+
 from Libraries import *
 
 
@@ -28,88 +29,90 @@ class algorithm(Grid):
     '''==============================================================================================='''
 
     
-    def visualize_path(self, path, AlGname): # Create static image for final path and explorations processes
-        #  ---------- The final path image -------------
-        plt.imshow(self.grid, cmap="gray_r")
-        plt.scatter(self.start[1], self.start[0], color="green")
-        plt.scatter(self.goal[1], self.goal[0], color="red")
-        path = np.array(path)
-        for i in range(1, path.shape[0] - 1):
-            plt.scatter(path[i, 1], path[i, 0], color="blue")
-        plt.title(f"Final Path - {AlGname}")
-        plt.xticks([])
-        plt.yticks([])
-        plt.savefig(f"{AlGname}_Final_Path.png")
-        plt.close()
+    def visualize_path(self, path, AlGname):
+        # Convert grid to a color image
+        cell_size = 20  # Size of each cell in the grid
+        grid_image = np.zeros((self.height * cell_size, self.width * cell_size, 3), dtype=np.uint8)
+        grid_image[self.grid.repeat(cell_size, axis=0).repeat(cell_size, axis=1) == 1] = [255, 255, 255]  # White for walkable paths
+        grid_image[self.grid.repeat(cell_size, axis=0).repeat(cell_size, axis=1) == 0] = [0, 0, 0]  # Black for obstacles
 
-        # ---------- The explored nodes image -------------
-        plt.imshow(self.grid, cmap="gray_r")
-        plt.scatter(self.start[1], self.start[0], color="green")
-        plt.scatter(self.goal[1], self.goal[0], color="red")
-        all_moves = np.array(self.all_moves)
-        plt.scatter(all_moves[:, 1], all_moves[:, 0], color="lightblue", alpha=0.5)
-        plt.title(f"Explored Nodes - {AlGname}")
-        plt.xticks([])
-        plt.yticks([])
-        plt.tight_layout()
-        plt.savefig(f"{AlGname}_explored_map.png")
-        plt.close()
+        # Draw start and goal
+        cv2.circle(grid_image, (self.start[1] * cell_size + cell_size // 2, self.start[0] * cell_size + cell_size // 2), cell_size // 3, (0, 255, 0), -1)  # Green for start
+        cv2.circle(grid_image, (self.goal[1] * cell_size + cell_size // 2, self.goal[0] * cell_size + cell_size // 2), cell_size // 3, (0, 0, 255), -1)  # Red for goal
+
+        # Draw path
+        for i in range(1, len(path) - 1):
+            cv2.line(grid_image, 
+                     (path[i-1][1] * cell_size + cell_size // 2, path[i-1][0] * cell_size + cell_size // 2), 
+                     (path[i][1] * cell_size + cell_size // 2, path[i][0] * cell_size + cell_size // 2), 
+                     (255, 0, 0), 2)  # Blue for path
+
+        # Save the final path image
+        cv2.imwrite(f"{AlGname}_Final_Path.png", grid_image)
+
+        # Draw explored nodes
+        for move in self.all_moves:
+            cv2.circle(grid_image, (move[1] * cell_size + cell_size // 2, move[0] * cell_size + cell_size // 2), cell_size // 4, (128, 128, 128), -1)  # Grey for explored nodes
+
+        # Save the explored nodes image
+        cv2.imwrite(f"{AlGname}_explored_map.png", grid_image)
 
 
     def images_frames(self, algoritmName, path, all_moves):# Create frames for video making for both processes and store it in directories
-        images_List = [] # store the frames of final path
-        WholeMoves = [] # store the frames of exploration path
+        images_List = []  # store the frames of final path
+        WholeMoves = []  # store the frames of exploration path
+
+        # Convert grid to a color image
+        cell_size = 20  # Size of each cell in the grid
+        grid_image = np.zeros((self.height * cell_size, self.width * cell_size, 3), dtype=np.uint8)
+        grid_image[self.grid.repeat(cell_size, axis=0).repeat(cell_size, axis=1) == 1] = [255, 255, 255]  # White for walkable paths
+        grid_image[self.grid.repeat(cell_size, axis=0).repeat(cell_size, axis=1) == 0] = [0, 0, 0]  # Black for obstacles
 
         # -------------- Frames of the final path -------------
         current_path = []
         for i in range(len(path)):
             current_path.append(path[i])
-            plt.figure(figsize=(6, 6))
-            plt.imshow(self.grid, cmap="gray_r")
-            plt.scatter(self.start[1], self.start[0], color="green")
-            plt.scatter(self.goal[1], self.goal[0], color="red")
-            # plot current path
-            if len(current_path) > 1:
-                current = np.array(current_path)
-                plt.scatter(current[1:, 1], current[1:, 0], color="blue", label="Path")
-            plt.title(f"Path Formation {algoritmName} - Step {i}")
-            plt.xticks([])
-            plt.yticks([])
-            # each image as frame, saved in directory
+            frame = grid_image.copy()
+
+            # Draw start and goal
+            cv2.circle(frame, (self.start[1] * cell_size + cell_size // 2, self.start[0] * cell_size + cell_size // 2), cell_size // 3, (0, 255, 0), -1)  # Green for start
+            cv2.circle(frame, (self.goal[1] * cell_size + cell_size // 2, self.goal[0] * cell_size + cell_size // 2), cell_size // 3, (0, 0, 255), -1)  # Red for goal
+
+            # Draw current path
+            for j in range(1, len(current_path)):
+                cv2.line(frame, 
+                         (current_path[j-1][1] * cell_size + cell_size // 2, current_path[j-1][0] * cell_size + cell_size // 2), 
+                         (current_path[j][1] * cell_size + cell_size // 2, current_path[j][0] * cell_size + cell_size // 2), 
+                         (255, 0, 0), 2)
+
+            # Draw the moving car/pointer
+            cv2.circle(frame, (current_path[-1][1] * cell_size + cell_size // 2, current_path[-1][0] * cell_size + cell_size // 2), cell_size // 2, (0, 255, 255), -1)  # Yellow for pointer
+
+            # Save frame
             os.makedirs(f"images_of_{algoritmName}_path", exist_ok=True)
             image_path = f"images_of_{algoritmName}_path/path_{i}.png"
-            plt.savefig(image_path)
+            cv2.imwrite(image_path, frame)
             images_List.append(image_path)
-            plt.close()
 
-        # ===================================================================================
-        # ------------------------------ whole algorithm for video making --------------------------
-        '''The main logic here is to take the (all_moves) which is the nodes that the algoritm covered
-            then plot each move, this plot is like a frame, we make the video from playing all these frames
-            after each other, so we created a directory for each type of frames saved during the code running
-            this directory has the frames, where we will take the images inside it and pass it to 'videoFrom_movements' 
-            and 'videoFrom_images', this will happen after (return images_List, WholeMoves) of the images_frames function we are in now
-            those are the lists with  paths for the frames we talked about
-        '''
         # -------------- Frames of the exploration path -------------
-
         explored_nodes = []
         for i, move in enumerate(all_moves):
             explored_nodes.append(move)
-            plt.figure(figsize=(6, 6))
-            plt.imshow(self.grid, cmap="gray_r")
-            plt.scatter(self.start[1], self.start[0], color="green")
-            plt.scatter(self.goal[1], self.goal[0], color="red")
-            explored = np.array(explored_nodes)
-            plt.scatter(explored[:, 1], explored[:, 0], color="grey", alpha=0.5)
-            plt.title(f"Exploration of {algoritmName} - Step {i}")
-            plt.xticks([])
-            plt.yticks([])
+            frame = grid_image.copy()
+
+            # Draw start and goal
+            cv2.circle(frame, (self.start[1] * cell_size + cell_size // 2, self.start[0] * cell_size + cell_size // 2), cell_size // 3, (0, 255, 0), -1)
+            cv2.circle(frame, (self.goal[1] * cell_size + cell_size // 2, self.goal[0] * cell_size + cell_size // 2), cell_size // 3, (0, 0, 255), -1)
+
+            # Draw explored nodes
+            for node in explored_nodes:
+                cv2.circle(frame, (node[1] * cell_size + cell_size // 2, node[0] * cell_size + cell_size // 2), cell_size // 4, (128, 128, 128), -1)  # Grey for explored nodes
+
+            # Save frame
             os.makedirs(f"images_of_{algoritmName}_exploration", exist_ok=True)
             AllMoves_img_path = f"images_of_{algoritmName}_exploration/explore_{i}.png"
-            plt.savefig(AllMoves_img_path)
+            cv2.imwrite(AllMoves_img_path, frame)
             WholeMoves.append(AllMoves_img_path)
-            plt.close()
 
         self.images_List = images_List
         self.wholeMoves = WholeMoves
@@ -246,9 +249,9 @@ class algorithm(Grid):
         if limit <= 0:
             return False
 
-        visited.add(current)  # Add current node to the visited set
+        visited.add(current)
 
-        for dx, dy in self.Moves: # get all possible and valid and not visited neighbors
+        for dx, dy in self.Moves:
             neighbor = (current[0] + dx, current[1] + dy)
             if (
                 0 <= neighbor[0] < self.width and
@@ -259,46 +262,45 @@ class algorithm(Grid):
                 parent[neighbor] = current
                 all_moves.append(neighbor)
 
-                # Call the recursive depth-limited search
-                if self.depth_limited_search(neighbor, limit - 1, parent, visited, all_moves):
+                if self.depth_limited_search(neighbor, limit - 1, parent, visited.copy(), all_moves):
                     return True
 
         return False
 
     def iterative_deepening_search(self):
-        memory_max = 0  
         depth = 0
         parent = {self.start: None}
-        all_moves = []  
-        total_visited_nodes = 0  
-        start_time = time.time()  
+        all_moves = []
+        memory_max = 0
+        start_time = time.time()
 
-        while True:
-            # Reset the visited and itteration_moves for this itteration 
+        max_depth = self.width * self.height  # Maximum possible depth for termination
+        while depth <= max_depth:
             visited = set()
-            iteration_moves = []  
+            iteration_moves = []
 
-            
             if self.depth_limited_search(self.start, depth, parent, visited, iteration_moves):
-                break # Goal is found
-            # else
-            memory_max = max(memory_max, get_memory_size_ids(visited, parent, iteration_moves))
+                break
 
+            memory_max = max(memory_max, get_memory_size_ids(visited, parent, iteration_moves))
             depth += 1
-            all_moves.extend(iteration_moves)  # Append moves from the performed itteration 
+            all_moves.extend(iteration_moves)
+
+        # Handle case where no solution is found
+        if depth > max_depth:
+            return None, 'IDS', all_moves, memory_max, None, None, time.time() - start_time
 
         path = []
         current = self.goal
         while current:
             path.append(current)
-            current = parent[current]
+            current = parent.get(current)
 
-        path.reverse()  
+        path.reverse()
 
         total_search_cost = sum(self.cost_map[x[0], x[1]] for x in all_moves)
         final_path_cost = sum(self.cost_map[x[0], x[1]] for x in path)
-        end_time = time.time()  
-        working_time = end_time - start_time  
+        working_time = time.time() - start_time
 
         return path, 'IDS', all_moves, memory_max, total_search_cost, final_path_cost, working_time
 

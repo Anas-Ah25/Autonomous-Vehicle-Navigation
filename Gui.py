@@ -1,6 +1,10 @@
 from Libraries import *
 from Algorthims import *
 
+# Define a constant for the window size
+WINDOW_WIDTH = 800
+WINDOW_HEIGHT = 370
+
 '''========================================== Algorithm Selection MAIN Window ===================================='''
 
 class AlgorithmSelectionGUI:
@@ -9,9 +13,11 @@ class AlgorithmSelectionGUI:
         self.algorithms = algorithms
         self.selected_algorithm = None
 
+        # Set a fixed size for the main window
+        self.root.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}")
         self.root.title("Select Algorithm")
 
-        self.selection_window = tk.Frame(self.root)
+        self.selection_window = tk.Frame(self.root, width=WINDOW_WIDTH, height=WINDOW_HEIGHT)
         self.selection_window.pack(fill="both", expand=True)
 
         self.title_label = tk.Label(self.selection_window, text="Select Algorithm", font=("Arial", 24))
@@ -35,6 +41,7 @@ class AlgorithmSelectionGUI:
 class LoadingScreenGUI:
     def __init__(self, root):
         self.root = root
+        self.root.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}")
         self.root.title("Loading")
         self.loading_label = tk.Label(self.root, text="Loading, please wait...", font=("Arial", 18))
         self.loading_label.pack(pady=20)
@@ -44,6 +51,7 @@ class LoadingScreenGUI:
 class ResultGUI:
     def __init__(self, root, outputs, algorithm_name, run_time, memory_max, analytics_data):
         self.root = root
+        self.root.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}")
         self.root.title("Algorithm Visualization")
         self.outputs = outputs
         self.algorithm_name = algorithm_name
@@ -53,8 +61,8 @@ class ResultGUI:
         self.try_again = False  # Flag to indicate if user wants to try another algorithm
 
         # Create pages
-        self.result_page = tk.Frame(self.root)
-        self.analytics_page = tk.Frame(self.root)
+        self.result_page = tk.Frame(self.root, width=WINDOW_WIDTH, height=WINDOW_HEIGHT)
+        self.analytics_page = tk.Frame(self.root, width=WINDOW_WIDTH, height=WINDOW_HEIGHT)
 
         # Set up pages
         self.setup_result_page()
@@ -90,7 +98,7 @@ class ResultGUI:
     def setup_analytics_page(self):
         self.analytics_label = tk.Label(self.analytics_page, text="Analytics", font=("Arial", 18))
         self.analytics_label.pack(pady=20)
-        self.analytics_text = tk.Text(self.analytics_page, width=60, height=20)
+        self.analytics_text = tk.Text(self.analytics_page, width=80, height=25)
         self.analytics_text.pack()
         self.back_button = tk.Button(self.analytics_page, text="Back", command=self.show_result_page)
         self.back_button.pack(pady=10)
@@ -118,12 +126,26 @@ class ResultGUI:
         self.cap = cv2.VideoCapture(video_path)
         self.update_video_frame()
 
+    def view_final_path_image(self):
+        image = Image.open(self.final_path_image_path)
+        image = image.resize((420, 320), Image.LANCZOS)  # Resize to fit within the window
+        self.photo = ImageTk.PhotoImage(image)
+        self.video_label.config(image=self.photo)
+        self.video_label.image = self.photo  # Keep a reference
+
+    def view_explored_nodes_image(self):
+        image = Image.open(self.explored_nodes_image_path)
+        image = image.resize((420, 320), Image.LANCZOS)  # Resize to fit within the window
+        self.photo = ImageTk.PhotoImage(image)
+        self.video_label.config(image=self.photo)
+        self.video_label.image = self.photo  # Keep a reference
+
     def update_video_frame(self):
         ret, frame = self.cap.read()
         if ret:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            frame = cv2.resize(frame, (420, 320))  # Resize to fit within the window
             frame = Image.fromarray(frame)
-            frame = frame.resize((600, 600), Image.LANCZOS) # LANCZOS -> maintain image quality when DownSampling
             self.photo = ImageTk.PhotoImage(frame)
             self.video_label.config(image=self.photo)
             self.video_label.image = self.photo  # Keep a reference
@@ -131,20 +153,6 @@ class ResultGUI:
         else:
             self.cap.release()
             self.cap = None
-
-    def view_final_path_image(self):
-        image = Image.open(self.final_path_image_path)
-        image = image.resize((600, 600), Image.LANCZOS)
-        self.photo = ImageTk.PhotoImage(image)
-        self.video_label.config(image=self.photo)
-        self.video_label.image = self.photo  # Keep a reference
-
-    def view_explored_nodes_image(self):
-        image = Image.open(self.explored_nodes_image_path)
-        image = image.resize((600, 600), Image.LANCZOS)
-        self.photo = ImageTk.PhotoImage(image)
-        self.video_label.config(image=self.photo)
-        self.video_label.image = self.photo  # Keep a reference
 
     def show_analytics_page(self):
         self.result_page.pack_forget()
@@ -164,9 +172,6 @@ class ResultGUI:
 
 
 '''==============================================================================================='''
-'''######################################### Excute the chosen algorithm #########################################'''
-'''==============================================================================================='''
-
 
 def execute_algorithm(algorithmName, width=25, height=25, start=(0, 0), goal=(24, 24)):
     print(f"Starting {algorithmName} algorithm...")
@@ -216,4 +221,3 @@ def execute_algorithm(algorithmName, width=25, height=25, start=(0, 0), goal=(24
         'final_image': f"{AlGname}_Final_Path.png",
         'explored_nodes_image': f"{AlGname}_explored_map.png"
     }, run_time, memory_max
-

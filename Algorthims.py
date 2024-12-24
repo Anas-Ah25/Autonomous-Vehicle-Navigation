@@ -30,85 +30,65 @@ class algorithm(Grid):
 
     
     def visualize_path(self, path, AlGname):
-        # Convert grid to a color image
-        cell_size = 20  # Size of each cell in the grid
+        cell_size = 360 // max(self.width, self.height)  # Calculate cell size based on desired resolution
         grid_image = np.zeros((self.height * cell_size, self.width * cell_size, 3), dtype=np.uint8)
-        grid_image[self.grid.repeat(cell_size, axis=0).repeat(cell_size, axis=1) == 1] = [255, 255, 255]  # White for walkable paths
-        grid_image[self.grid.repeat(cell_size, axis=0).repeat(cell_size, axis=1) == 0] = [0, 0, 0]  # Black for obstacles
+        grid_image[self.grid.repeat(cell_size, axis=0).repeat(cell_size, axis=1) == 1] = [255, 255, 255]
+        grid_image[self.grid.repeat(cell_size, axis=0).repeat(cell_size, axis=1) == 0] = [0, 0, 0]
 
         # Draw start and goal
-        cv2.circle(grid_image, (self.start[1] * cell_size + cell_size // 2, self.start[0] * cell_size + cell_size // 2), cell_size // 3, (0, 255, 0), -1)  # Green for start
-        cv2.circle(grid_image, (self.goal[1] * cell_size + cell_size // 2, self.goal[0] * cell_size + cell_size // 2), cell_size // 3, (0, 0, 255), -1)  # Red for goal
+        cv2.circle(grid_image, (self.start[1] * cell_size + cell_size // 2, self.start[0] * cell_size + cell_size // 2), cell_size // 3, (0, 255, 0), -1)
+        cv2.circle(grid_image, (self.goal[1] * cell_size + cell_size // 2, self.goal[0] * cell_size + cell_size // 2), cell_size // 3, (0, 0, 255), -1)
 
         # Draw path
-        for i in range(1, len(path) - 1):
+        for i in range(1, len(path)):
             cv2.line(grid_image, 
-                     (path[i-1][1] * cell_size + cell_size // 2, path[i-1][0] * cell_size + cell_size // 2), 
-                     (path[i][1] * cell_size + cell_size // 2, path[i][0] * cell_size + cell_size // 2), 
-                     (255, 0, 0), 2)  # Blue for path
+                    (path[i-1][1] * cell_size + cell_size // 2, path[i-1][0] * cell_size + cell_size // 2), 
+                    (path[i][1] * cell_size + cell_size // 2, path[i][0] * cell_size + cell_size // 2), 
+                    (255, 0, 0), 2)
 
-        # Save the final path image
         cv2.imwrite(f"{AlGname}_Final_Path.png", grid_image)
 
         # Draw explored nodes
         for move in self.all_moves:
-            cv2.circle(grid_image, (move[1] * cell_size + cell_size // 2, move[0] * cell_size + cell_size // 2), cell_size // 4, (128, 128, 128), -1)  # Grey for explored nodes
+            cv2.circle(grid_image, (move[1] * cell_size + cell_size // 2, move[0] * cell_size + cell_size // 2), cell_size // 4, (128, 128, 128), -1)
 
-        # Save the explored nodes image
         cv2.imwrite(f"{AlGname}_explored_map.png", grid_image)
 
-
-    def images_frames(self, algoritmName, path, all_moves):# Create frames for video making for both processes and store it in directories
-        images_List = []  # store the frames of final path
-        WholeMoves = []  # store the frames of exploration path
-
-        # Convert grid to a color image
-        cell_size = 20  # Size of each cell in the grid
+    def images_frames(self, algoritmName, path, all_moves):
+        images_List = []
+        WholeMoves = []
+        cell_size = 360 // max(self.width, self.height)  # Calculate cell size based on desired resolution
         grid_image = np.zeros((self.height * cell_size, self.width * cell_size, 3), dtype=np.uint8)
-        grid_image[self.grid.repeat(cell_size, axis=0).repeat(cell_size, axis=1) == 1] = [255, 255, 255]  # White for walkable paths
-        grid_image[self.grid.repeat(cell_size, axis=0).repeat(cell_size, axis=1) == 0] = [0, 0, 0]  # Black for obstacles
+        grid_image[self.grid.repeat(cell_size, axis=0).repeat(cell_size, axis=1) == 1] = [255, 255, 255]
+        grid_image[self.grid.repeat(cell_size, axis=0).repeat(cell_size, axis=1) == 0] = [0, 0, 0]
 
-        # -------------- Frames of the final path -------------
+        # Path frames
         current_path = []
-        for i in range(len(path)):
-            current_path.append(path[i])
+        for i, point in enumerate(path):
+            current_path.append(point)
             frame = grid_image.copy()
-
-            # Draw start and goal
-            cv2.circle(frame, (self.start[1] * cell_size + cell_size // 2, self.start[0] * cell_size + cell_size // 2), cell_size // 3, (0, 255, 0), -1)  # Green for start
-            cv2.circle(frame, (self.goal[1] * cell_size + cell_size // 2, self.goal[0] * cell_size + cell_size // 2), cell_size // 3, (0, 0, 255), -1)  # Red for goal
-
-            # Draw current path
+            cv2.circle(frame, (self.start[1] * cell_size + cell_size // 2, self.start[0] * cell_size + cell_size // 2), cell_size // 3, (0, 255, 0), -1)
+            cv2.circle(frame, (self.goal[1] * cell_size + cell_size // 2, self.goal[0] * cell_size + cell_size // 2), cell_size // 3, (0, 0, 255), -1)
             for j in range(1, len(current_path)):
                 cv2.line(frame, 
-                         (current_path[j-1][1] * cell_size + cell_size // 2, current_path[j-1][0] * cell_size + cell_size // 2), 
-                         (current_path[j][1] * cell_size + cell_size // 2, current_path[j][0] * cell_size + cell_size // 2), 
-                         (255, 0, 0), 2)
-
-            # Draw the moving car/pointer
-            cv2.circle(frame, (current_path[-1][1] * cell_size + cell_size // 2, current_path[-1][0] * cell_size + cell_size // 2), cell_size // 2, (0, 255, 255), -1)  # Yellow for pointer
-
-            # Save frame
+                        (current_path[j-1][1] * cell_size + cell_size // 2, current_path[j-1][0] * cell_size + cell_size // 2), 
+                        (current_path[j][1] * cell_size + cell_size // 2, current_path[j][0] * cell_size + cell_size // 2), 
+                        (255, 0, 0), 2)
+            cv2.circle(frame, (current_path[-1][1] * cell_size + cell_size // 2, current_path[-1][0] * cell_size + cell_size // 2), cell_size // 2, (0, 255, 255), -1)
             os.makedirs(f"images_of_{algoritmName}_path", exist_ok=True)
             image_path = f"images_of_{algoritmName}_path/path_{i}.png"
             cv2.imwrite(image_path, frame)
             images_List.append(image_path)
 
-        # -------------- Frames of the exploration path -------------
+        # Exploration frames
         explored_nodes = []
         for i, move in enumerate(all_moves):
             explored_nodes.append(move)
             frame = grid_image.copy()
-
-            # Draw start and goal
             cv2.circle(frame, (self.start[1] * cell_size + cell_size // 2, self.start[0] * cell_size + cell_size // 2), cell_size // 3, (0, 255, 0), -1)
             cv2.circle(frame, (self.goal[1] * cell_size + cell_size // 2, self.goal[0] * cell_size + cell_size // 2), cell_size // 3, (0, 0, 255), -1)
-
-            # Draw explored nodes
             for node in explored_nodes:
-                cv2.circle(frame, (node[1] * cell_size + cell_size // 2, node[0] * cell_size + cell_size // 2), cell_size // 4, (128, 128, 128), -1)  # Grey for explored nodes
-
-            # Save frame
+                cv2.circle(frame, (node[1] * cell_size + cell_size // 2, node[0] * cell_size + cell_size // 2), cell_size // 4, (128, 128, 128), -1)
             os.makedirs(f"images_of_{algoritmName}_exploration", exist_ok=True)
             AllMoves_img_path = f"images_of_{algoritmName}_exploration/explore_{i}.png"
             cv2.imwrite(AllMoves_img_path, frame)
@@ -119,7 +99,7 @@ class algorithm(Grid):
         self.all_moves = all_moves
 
         return images_List, WholeMoves
-    
+        
     # -------------------------------------- Video making -----------------------------------------------
     
     def videoFrom_images(self, algoName, fps=5): # Create path formation video

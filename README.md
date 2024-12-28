@@ -153,15 +153,6 @@ python main.py
 
 ---
 
-## **👥 Contributors**
-
-- **Anas Ahmad**  
-- **Ahmed Fouda**  
-- **Amin Gamal**  
-- **Mohamed Ehab**  
-
----
-
 ## **📝 Notes**
 
 - **Phase 1:** Focused on comparing and visualizing **pathfinding algorithms** with static search strategies.  

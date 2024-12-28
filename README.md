@@ -4,23 +4,6 @@ This project consists of two phases:
 1. Path Planning Algorithms Visualization and Comparison
 2. Reinforcement Learning for Autonomous Navigation
 
----
-
-## 📂 Project Structure
-├── phase1/
-│   ├── algorithms.py   # Contains functions like bfs, dfs, ucs, etc.
-│   ├── gui.py          # Handles GUI-related functionality
-│   ├── node_grid.py    # Contains node and grid-related functionality
-│   ├── main.py         # Main script for running phase 1
-|   ├── libraries.py    # Contains all the needed libraries
-|   ├── astar_vs_greedy.py   # Compare A* and Greedy performance
-├── phase2/
-│   ├── agent.py        # Contains functions like choose_action, update_q_value, etc.
-│   ├── environment.py  # Contains functions like get_obstacles, get_reward, etc.
-│   ├── visualization.py # Contains functions like draw_city_grid, draw_agent, etc.
-│   ├── main.py         # Main script for running phase 2
-├── README.md           # Project overview and documentation
-├── requirements.txt    # Dependencies for the project
 
 ---
 

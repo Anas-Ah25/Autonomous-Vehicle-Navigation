@@ -14,10 +14,10 @@ class Visualizer:
         self.cell_size = cell_size
         self.screen = screen
         self.colors = {
-            "road": (100, 100, 100),
+            "road": (80, 80, 80),
             "agent": (0, 0, 255),
-            "goal": (0, 255, 0),
-            "obstacle": (139, 69, 19),
+            "goal": (255, 0, 0),
+            "obstacle": (50, 163, 46),
             "hud_text": (255, 255, 255),
         }
 

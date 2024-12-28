@@ -10,10 +10,10 @@ pygame.init()
 # --------------------------------  Configuration parameters ---------------------------------
 ''' ========================================================================================= '''
 
-GRID_SIZE = 10      # Grid dimensions (10x10)
+GRID_SIZE = 10      # Grid (10x10)
 CELL_SIZE = 40      # cells size
-EPISODES = 65      #  training episodes
-STEPS_PER_EPISODE = 70  # Maximum steps per episode
+EPISODES = 200      #  training episodes
+STEPS_PER_EPISODE = GRID_SIZE * GRID_SIZE  # can't move more than the whole grid
 ALPHA = 0.1         # learning rate
 GAMMA = 0.9         # penalty factor
 EPSILON = 0.3       # exploration rate
@@ -24,7 +24,7 @@ FPS = 60            # visualization speed
 # ------------ Initialize --------------- 
 WIDTH, HEIGHT = GRID_SIZE * CELL_SIZE, GRID_SIZE * CELL_SIZE
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Car Path Learning Visualization")
+pygame.display.set_caption("CSAI 301 - Pr - PH2")
 
 env = Environment(GRID_SIZE)
 agent = Agent(GRID_SIZE, alpha=ALPHA, gamma=GAMMA, epsilon=EPSILON)

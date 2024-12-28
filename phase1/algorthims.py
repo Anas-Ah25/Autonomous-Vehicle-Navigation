@@ -246,10 +246,11 @@ class algorithm(Grid):
                 parent[neighbor] = current
                 all_moves.append(neighbor)
 
-                if self.depth_limited_search(neighbor, limit - 1, parent, visited.copy(), all_moves):
+                if self.depth_limited_search(neighbor, limit - 1, parent, visited, all_moves):
                     return True
 
         return False
+
 
     def iterative_deepening_search(self):
         depth = 0
@@ -258,19 +259,18 @@ class algorithm(Grid):
         memory_max = 0
         start_time = time.time()
 
-        max_depth = self.width * self.height  # Maximum possible depth for termination
+        max_depth = self.width * self.height
         while depth <= max_depth:
             visited = set()
             iteration_moves = []
 
             if self.depth_limited_search(self.start, depth, parent, visited, iteration_moves):
+                all_moves = iteration_moves
                 break
 
             memory_max = max(memory_max, get_memory_size_ids(visited, parent, iteration_moves))
             depth += 1
-            all_moves.extend(iteration_moves)
 
-        # Handle case where no solution is found
         if depth > max_depth:
             return None, 'IDS', all_moves, memory_max, None, None, time.time() - start_time
 
@@ -287,6 +287,7 @@ class algorithm(Grid):
         working_time = time.time() - start_time
 
         return path, 'IDS', all_moves, memory_max, total_search_cost, final_path_cost, working_time
+
 
     '''========================================== UCS =============================================='''
 

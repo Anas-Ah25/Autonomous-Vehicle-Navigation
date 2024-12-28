@@ -34,32 +34,20 @@ This project provides a **graphical user interface (GUI)** to visualize and comp
 ---
 
 ## 📂 Project Structure
-📦 AlgorithmVisualizer  
-├── algorithms.py/  
-│   ├── bfs 
-│   ├── dfs 
-│   ├── ids
-|   ├── ucs
-|   ├── greedy 
-|   ├── a_star
-|   ├── hill climbing
-│   ├── simulated_annealing 
-|   ├── genetic
-│   └── __init__.py  
-├── main.py  
-├── gui/  
-│   ├── algorithm_selection.py  
-│   ├── loading_screen.py  
-│   ├── result_screen.py  
-│   └── __init__.py  
-├── assets/  
-│   ├── exploration_videos/  
-│   ├── path_images/  
-│   └── final_videos/  
-├── node_grid/  
-│   ├── node  
-│   ├── grid 
-└── README.md  
+├── phase1/
+│   ├── algorithms.py   # Contains functions like bfs, dfs, ucs, etc.
+│   ├── gui.py          # Handles GUI-related functionality
+│   ├── node_grid.py    # Contains node and grid-related functionality
+│   ├── main.py         # Main script for running phase 1
+|   ├── libraries.py    # Contains all the needed libraries
+|   ├── astar_vs_greedy.py   # Compare A* and Greedy performance
+├── phase2/
+│   ├── agent.py        # Contains functions like choose_action, update_q_value, etc.
+│   ├── environment.py  # Contains functions like get_obstacles, get_reward, etc.
+│   ├── visualization.py # Contains functions like draw_city_grid, draw_agent, etc.
+│   ├── main.py         # Main script for running phase 2
+├── README.md           # Project overview and documentation
+├── requirements.txt    # Dependencies for the project
 
 ---
 
@@ -78,6 +66,7 @@ The project consists of the following key steps:
 - Matplotlib (for visualizations)
 - NumPy (for algorithm implementation)
 - Imageio
+- pygame
 
 ---
 
@@ -88,7 +77,7 @@ The project consists of the following key steps:
    ```
 2. Navigate to the project directory:
 ```bash
-cd AlgorithmVisualizer
+cd Autonomous-Vehicle-Navigation
 ```
 3.Install required dependencies:
 ```bash

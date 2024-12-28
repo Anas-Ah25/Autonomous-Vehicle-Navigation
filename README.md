@@ -25,7 +25,7 @@ The project is divided into two main phases, each focusing on a distinct approac
 
 ## **Prerequisites**  
 
-- **Python 3.x**  
+- **Python 3.12**  
 - **Tkinter** (GUI for Phase 1)  
 - **Matplotlib** (Visualizations)  
 - **NumPy** (Algorithm Implementation)  
@@ -57,7 +57,7 @@ pip install -r requirements.txt
 
 ### **Phase 1: Path Planning Algorithms**  
 
-#### **Option 1: Backend (Algorithm Comparison)**  
+#### **Option 1: Backend (Algorithm Comparison Report)**  
 ```bash
 python algorithms.py
 ```
@@ -72,6 +72,38 @@ python main.py
 - Launches an interactive GUI.  
 - Allows users to select and visualize specific algorithms.  
 - Displays execution results and performance metrics.  
+
+#### **If You Encounter Issues in Phase 1**  
+If errors occur while running the app, execute the files manually in the following order:
+
+1. **Libraries:** Ensure all dependencies are loaded correctly:  
+```bash
+python libraries.py
+```
+
+2. **Node Grid:** Initialize the grid system:  
+```bash
+python node_grid.py
+```
+
+3. **Algorithms:** Load the pathfinding algorithms:  
+```bash
+python algorithms.py
+```
+
+4. **GUI:** Start the graphical interface:  
+```bash
+python gui.py
+```
+
+5. **Main:** Run the main application:  
+```bash
+python main.py
+```
+
+This step-by-step execution ensures all dependencies and files are properly initialized before launching the application.
+
+---
 
 ### **Phase 2: Reinforcement Learning**  
 
@@ -119,28 +151,15 @@ python main.py
 
 ## **Key Features**
 
-- **Phase 1:**  
-   - Multiple path planning algorithms implemented: *BFS, DFS, UCS, IDS, Greedy, A\*, Hill Climbing, Simulated Annealing*.  
-   - Real-time visualization of algorithm performance.  
-   - Performance metrics comparison via analytics reports.  
+### **Phase 1:**  
+- Multiple path planning algorithms (*BFS, DFS, UCS, IDS, Greedy, A\*, Hill Climbing, Simulated Annealing*).  
+- Real-time visualization of algorithm performance.  
+- Performance metrics comparison via analytics reports.  
 
-- **Phase 2:**  
-   - Implementation of **Q-Learning** for autonomous navigation.  
-   - Dynamic agent visualization using **Pygame**.  
-   - Comprehensive training analytics and CSV report generation.  
-
----
-
-## **Requirements**
-
-- Python 3.x  
-- NumPy  
-- Matplotlib  
-- OpenCV  
-- Tkinter  
-- Imageio  
-- Pygame  
-
+### **Phase 2:**  
+- Implementation of **Q-Learning** for autonomous navigation.  
+- Dynamic agent visualization using **Pygame**.  
+- Comprehensive training analytics and CSV report generation.  
 ---
 
 ## **Contributors**
@@ -149,3 +168,5 @@ python main.py
 - **Ahmed Fouda**  
 - **Amin Gamal**  
 - **Mohamed Ehab**  
+
+---

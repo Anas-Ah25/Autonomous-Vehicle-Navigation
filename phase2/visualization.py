@@ -1,72 +1,129 @@
 import pygame
-import matplotlib.pyplot as plt
-import seaborn as sns
-import numpy as np
 
 class Visualizer:
     def __init__(self, grid_size, cell_size, screen):
+        """
+        Initialize the Visualizer with grid and cell dimensions and the Pygame screen.
+
+        Args:
+            grid_size (int): The size of the grid (e.g., number of cells in width/height).
+            cell_size (int): The size of each cell in pixels.
+            screen (pygame.Surface): The Pygame screen where the visualization is drawn.
+        """
         self.grid_size = grid_size
         self.cell_size = cell_size
         self.screen = screen
-        self.white = (255, 255, 255)
-        self.gray = (200, 200, 200)
-        self.green = (0, 255, 0)
-        self.blue = (0, 0, 255)
-        self.orange = (255, 165, 0)
-        self.grey = (128, 128, 128)
+        self.colors = {
+            "road": (100, 100, 100),
+            "agent": (0, 0, 255),
+            "goal": (0, 255, 0),
+            "obstacle": (139, 69, 19),
+            "hud_text": (255, 255, 255),
+        }
 
-    def draw_grid(self):
-        for x in range(0, self.grid_size * self.cell_size, self.cell_size):
-            pygame.draw.line(self.screen, self.gray, (x, 0), (x, self.grid_size * self.cell_size))
-        for y in range(0, self.grid_size * self.cell_size, self.cell_size):
-            pygame.draw.line(self.screen, self.gray, (0, y), (self.grid_size * self.cell_size, y))
+    def draw_city_grid(self, maze):
+        """
+        Draw the city grid based on the maze layout.
+        
+        Args:
+            maze (list of list of int): The maze layout where 1 represents road and 0 represents obstacle.
+        """
+        for y, row in enumerate(maze):
+            for x, cell in enumerate(row):
+                # Determine color based on cell value
+                color = self.colors["road"] if cell == 1 else self.colors["obstacle"]
+                # Draw the cell as a rectangle on the screen
+                pygame.draw.rect(
+                    self.screen, color,
+                    (x * self.cell_size, y * self.cell_size, self.cell_size, self.cell_size)
+                )
 
-    def draw_agent(self, state, color):
+    def draw_agent(self, state):
+        """
+        Draw the agent on the grid.
+        
+        Args:
+            state (tuple of int): The (x, y) position of the agent.
+        """
         x, y = state
-        pygame.draw.rect(self.screen, color, (x * self.cell_size, y * self.cell_size, self.cell_size, self.cell_size))
+        # Draw the agent as a smaller rectangle within the cell
+        pygame.draw.rect(
+            self.screen, self.colors["agent"],
+            (x * self.cell_size + 5, y * self.cell_size + 5, self.cell_size - 10, self.cell_size - 10)
+        )
 
-    def draw_q_values(self, q_table):
-        font = pygame.font.SysFont(None, 14)
-        for x in range(self.grid_size):
-            for y in range(self.grid_size):
-                state = (x, y)
-                for i, action in enumerate(["UP", "DOWN", "LEFT", "RIGHT"]):
-                    q_value = q_table[state][action]
-                    text = font.render(f"{q_value:.1f}", True, self.grey)
-                    offset = [(self.cell_size // 2, 5), (self.cell_size // 2, self.cell_size - 15), (5, self.cell_size // 2), (self.cell_size - 20, self.cell_size // 2)]
-                    pos = (x * self.cell_size + offset[i][0], y * self.cell_size + offset[i][1])
-                    self.screen.blit(text, pos)
+    def draw_goal(self, state):
+        """
+        Draw the goal on the grid.
+        
+        Args:
+            state (tuple of int): The (x, y) position of the goal.
+        """
+        x, y = state
+        # Draw the goal as a rectangle on the screen
+        pygame.draw.rect(
+            self.screen, self.colors["goal"],
+            (x * self.cell_size, y * self.cell_size, self.cell_size, self.cell_size)
+        )
 
-    def draw_obstacles(self, obstacles):
-        for obs in obstacles:
-            self.draw_agent(obs, self.orange)
+    def draw_hud(self, steps, reward, epsilon, episode):
+        """
+        Draw the HUD (Heads-Up Display) with current statistics.
+        
+        Args:
+            steps (int): The number of steps taken.
+            reward (float): The current reward.
+            epsilon (float): The current epsilon value.
+            episode (int): The current episode number.
+        """
+        font = pygame.font.SysFont(None, 24)
+        # Render the HUD text
+        hud_text = font.render(
+            f"Ep: {episode} | Steps: {steps} | Reward: {reward} | Epsilon: {epsilon:.2f}",
+            True, self.colors["hud_text"]
+        )
+        # Draw the HUD text on the screen
+        self.screen.blit(hud_text, (10, 10))
 
-    def display_goal_reached(self):
-        font = pygame.font.SysFont(None, 48)
-        text = font.render("Goal Reached!", True, self.green)
-        self.screen.blit(text, (self.grid_size * self.cell_size // 2 - 100, self.grid_size * self.cell_size // 2 - 20))
+    def display_statistics(self, results):
+        """
+        Display final results on the game window.
+        
+        Args:
+            results (dict): A dictionary with metrics like total time, avg steps, etc.
+        """
+        font_title = pygame.font.SysFont(None, 36)
+        font_text = pygame.font.SysFont(None, 24)
+
+        # Clear the screen with dark background
+        self.screen.fill((30, 30, 30))
+        
+        # Display Title
+        title_text = font_title.render("Learning Statistics", True, (255, 255, 255))
+        self.screen.blit(title_text, (self.grid_size * self.cell_size // 2 - 120, 50))
+        
+        # Display Metrics
+        y_offset = 120
+        for key, value in results.items():
+            text = font_text.render(f"{key}: {value}", True, (255, 255, 255))
+            self.screen.blit(text, (50, y_offset))
+            y_offset += 40
+
+        # Add Close Button
+        close_button = pygame.Rect(self.grid_size * self.cell_size // 2 - 50, y_offset + 50, 100, 40)
+        pygame.draw.rect(self.screen, (200, 0, 0), close_button)
+        close_text = font_text.render("Close", True, (255, 255, 255))
+        self.screen.blit(close_text, (self.grid_size * self.cell_size // 2 - 30, y_offset + 60))
+
         pygame.display.flip()
-        pygame.time.delay(1000)
 
-    def plot_heatmap(self, q_table):
-        state_values = np.zeros((self.grid_size, self.grid_size))
-        for x in range(self.grid_size):
-            for y in range(self.grid_size):
-                state = (x, y)
-                state_values[x, y] = max(q_table[state].values())
-        plt.figure(figsize=(10, 8))
-        sns.heatmap(state_values, cmap="coolwarm", cbar=True)
-        plt.title("State Value Heatmap")
-        plt.xlabel("X-axis")
-        plt.ylabel("Y-axis")
-        plt.show()
-
-    def plot_performance(self, steps_per_episode, cumulative_rewards):
-        plt.figure(figsize=(12, 6))
-        plt.subplot(1, 2, 1)
-        plt.plot(cumulative_rewards)
-        plt.xlabel("Episode")
-        plt.ylabel("Cumulative Reward")
-        plt.title("Cumulative Rewards Over Episodes")
-        plt.tight_layout()
-        plt.show()
+        # Wait for user to click the "Close" button
+        waiting = True
+        while waiting:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if close_button.collidepoint(event.pos):
+                        waiting = False

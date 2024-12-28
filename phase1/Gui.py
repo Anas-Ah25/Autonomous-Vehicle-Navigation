@@ -216,8 +216,8 @@ def execute_algorithm(algorithmName, width=25, height=25, start=(0, 0), goal=(24
     run_time = end_time - start_time
     print(f"{algorithmName} algorithm completed in {run_time:.2f} seconds.")
     return {
-        'exploration_video': f"{AlGname}_exploration.mp4",
-        'path_video': f"{AlGname}_path_formation.mp4",
-        'final_image': f"{AlGname}_Final_Path.png",
-        'explored_nodes_image': f"{AlGname}_explored_map.png"
+        'exploration_video': os.path.join(grid.output_dir, f"{AlGname}_exploration.mp4"),
+        'path_video': os.path.join(grid.output_dir, f"{AlGname}_path_formation.mp4"),
+        'final_image': os.path.join(grid.output_dir, f"{AlGname}_Final_Path.png"),
+        'explored_nodes_image': os.path.join(grid.output_dir, f"{AlGname}_explored_map.png")
     }, run_time, memory_max

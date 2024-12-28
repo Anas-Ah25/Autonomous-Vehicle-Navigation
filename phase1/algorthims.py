@@ -23,6 +23,8 @@ class algorithm(Grid):
         super().__init__(width, height, start, goal)
         self.path = []
         self.images_List = []  # Added to store image paths
+        self.output_dir = "algorithm_outputs"
+        os.makedirs(self.output_dir, exist_ok=True)
 
     '''==============================================================================================='''
     '''######################################### Visualization #########################################'''
@@ -46,13 +48,13 @@ class algorithm(Grid):
                     (path[i][1] * cell_size + cell_size // 2, path[i][0] * cell_size + cell_size // 2), 
                     (255, 0, 0), 2)
 
-        cv2.imwrite(f"{AlGname}_Final_Path.png", grid_image)
+        cv2.imwrite(os.path.join(self.output_dir, f"{AlGname}_Final_Path.png"), grid_image)
 
         # Draw explored nodes
         for move in self.all_moves:
             cv2.circle(grid_image, (move[1] * cell_size + cell_size // 2, move[0] * cell_size + cell_size // 2), cell_size // 4, (128, 128, 128), -1)
 
-        cv2.imwrite(f"{AlGname}_explored_map.png", grid_image)
+        cv2.imwrite(os.path.join(self.output_dir, f"{AlGname}_explored_map.png"), grid_image)
 
     def images_frames(self, algoritmName, path, all_moves):
         images_List = []
@@ -64,6 +66,8 @@ class algorithm(Grid):
 
         # Path frames
         current_path = []
+        path_dir = os.path.join(self.output_dir, f"images_of_{algoritmName}_path")
+        os.makedirs(path_dir, exist_ok=True)
         for i, point in enumerate(path):
             current_path.append(point)
             frame = grid_image.copy()
@@ -75,13 +79,14 @@ class algorithm(Grid):
                         (current_path[j][1] * cell_size + cell_size // 2, current_path[j][0] * cell_size + cell_size // 2), 
                         (255, 0, 0), 2)
             cv2.circle(frame, (current_path[-1][1] * cell_size + cell_size // 2, current_path[-1][0] * cell_size + cell_size // 2), cell_size // 2, (0, 255, 255), -1)
-            os.makedirs(f"images_of_{algoritmName}_path", exist_ok=True)
-            image_path = f"images_of_{algoritmName}_path/path_{i}.png"
+            image_path = os.path.join(path_dir, f"path_{i}.png")
             cv2.imwrite(image_path, frame)
             images_List.append(image_path)
 
         # Exploration frames
         explored_nodes = []
+        explore_dir = os.path.join(self.output_dir, f"images_of_{algoritmName}_exploration")
+        os.makedirs(explore_dir, exist_ok=True)
         for i, move in enumerate(all_moves):
             explored_nodes.append(move)
             frame = grid_image.copy()
@@ -89,8 +94,7 @@ class algorithm(Grid):
             cv2.circle(frame, (self.goal[1] * cell_size + cell_size // 2, self.goal[0] * cell_size + cell_size // 2), cell_size // 3, (0, 0, 255), -1)
             for node in explored_nodes:
                 cv2.circle(frame, (node[1] * cell_size + cell_size // 2, node[0] * cell_size + cell_size // 2), cell_size // 4, (128, 128, 128), -1)
-            os.makedirs(f"images_of_{algoritmName}_exploration", exist_ok=True)
-            AllMoves_img_path = f"images_of_{algoritmName}_exploration/explore_{i}.png"
+            AllMoves_img_path = os.path.join(explore_dir, f"explore_{i}.png")
             cv2.imwrite(AllMoves_img_path, frame)
             WholeMoves.append(AllMoves_img_path)
 
@@ -103,14 +107,14 @@ class algorithm(Grid):
     # -------------------------------------- Video making -----------------------------------------------
     
     def videoFrom_images(self, algoName, fps=5): # Create path formation video
-        output_video_path = f"{algoName}_path_formation.mp4"
+        output_video_path = os.path.join(self.output_dir, f"{algoName}_path_formation.mp4")
         with imageio.get_writer(output_video_path, fps=fps) as video_writer:
             for image_path in self.images_List:
                 video_writer.append_data(imageio.imread(image_path))
         print("Path formation video created successfully!")
  
     def videoFrom_movements(self, algoName, fps=5): # Create video for nodes exploration
-        output_video_path = f"{algoName}_exploration.mp4"
+        output_video_path = os.path.join(self.output_dir, f"{algoName}_exploration.mp4")
         with imageio.get_writer(output_video_path, fps=fps) as video_writer:
             for image_path in self.wholeMoves:
                 video_writer.append_data(imageio.imread(image_path))

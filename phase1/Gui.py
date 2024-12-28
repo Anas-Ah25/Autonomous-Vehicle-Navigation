@@ -1,5 +1,5 @@
-from Libraries import *
-from Algorthims import *
+from libraries import *
+from algorthims import *
 
 '''========================================== Algorithm Selection MAIN Window ===================================='''
 

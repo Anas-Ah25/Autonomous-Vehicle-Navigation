@@ -1,7 +1,7 @@
-from Node_Grid import *
-from Algorthims import *
+from node_grid import *
+from algorthims import *
 from Gui import *
-from Libraries import *
+from libraries import *
 
 if __name__ == "__main__":
     algorithms = ["BFS", "DFS", "UCS", "IDS", "Greedy Best First Search", "A*", "Hill Climbing", "Simulated Annealing", "Genetic Algorithm"]

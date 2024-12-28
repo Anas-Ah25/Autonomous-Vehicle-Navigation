@@ -1,5 +1,5 @@
-from Node_Grid import *
-from Libraries import *
+from node_grid import *
+from libraries import *
 
 
 # Calculate max memory usage for all algorthims except IDS

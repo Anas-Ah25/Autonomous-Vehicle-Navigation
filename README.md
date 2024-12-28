@@ -1,138 +1,151 @@
-# 🚗 Autonomous-Vehicle-Navigation (CSAI 301 Project)
+# **Autonomous-Vehicle-Navigation (CSAI 301 Project)**  
 
-This project consists of two phases:
-1. Path Planning Algorithms Visualization and Comparison
-2. Reinforcement Learning for Autonomous Navigation
-
-
----
-
-## 🚀 How It Works
-The project consists of the following key steps:
-1. **Algorithm Selection**: Users can choose from different algorithms (BFS, DFS, UCS, IDS, Gready, A*, Hill Climbing, or Simulated Annealing) via the GUI.
-2. **Pathfinding Process**: Once an algorithm is selected, the program runs the chosen pathfinding algorithm on a grid. The grid is displayed in real-time, and the algorithm's progress is visualized as it explores nodes.
-3. **Output**: Once the algorithm completes, the final path and explored nodes are displayed as images or videos.
-4. **Analytics**: The performance metrics like execution time and memory usage are displayed to compare the efficiency of different algorithms.
+This project consists of two phases:  
+1. **Path Planning Algorithms Visualization and Comparison**  
+2. **Reinforcement Learning for Autonomous Navigation**  
 
 ---
 
-## ⚙ Prerequisites
-- Python 3.x
-- Tkinter (for GUI)
-- Matplotlib (for visualizations)
-- NumPy (for algorithm implementation)
-- Imageio
-- pygame
+## **How It Works**  
+
+The project is divided into two main phases, each focusing on a distinct approach to autonomous navigation.  
+
+### **Phase 1: Path Planning Algorithms**  
+1. **Algorithm Selection:** Users can choose from multiple algorithms (*BFS, DFS, UCS, IDS, Greedy, A\*, Hill Climbing, or Simulated Annealing*) via a GUI interface.  
+2. **Pathfinding Process:** The selected algorithm runs on a grid layout, with real-time visualization showing the exploration process and node traversal.  
+3. **Output:** The final path, along with explored nodes, is displayed as images or videos.  
+4. **Analytics:** Performance metrics such as **execution time** and **memory usage** are provided for algorithm comparison.  
+
+### **Phase 2: Reinforcement Learning**  
+1. **Training:** The agent learns to navigate an obstacle-filled grid using **Q-Learning**.  
+2. **Real-Time Visualization:** The learning process is displayed dynamically using **Pygame**, showing the agent's exploration and decision-making.  
+3. **Output:** Metrics such as **success rate**, **average rewards**, and **steps per episode** are logged and exported in a CSV file.  
 
 ---
 
-## 📦 Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Anas-Ah25/Autonomous-Vehicle-Navigation.git
-   ```
-2. Navigate to the project directory:
+## **Prerequisites**  
+
+- **Python 3.x**  
+- **Tkinter** (GUI for Phase 1)  
+- **Matplotlib** (Visualizations)  
+- **NumPy** (Algorithm Implementation)  
+- **Imageio** (Video Rendering for Phase 1)  
+- **Pygame** (Visualization for Phase 2)  
+
+---
+
+## **Installation**
+
+1. **Clone the Repository:**  
+```bash
+git clone https://github.com/Anas-Ah25/Autonomous-Vehicle-Navigation.git
+```
+
+2. **Navigate to the Project Directory:**  
 ```bash
 cd Autonomous-Vehicle-Navigation
 ```
 
-2. Run files in the following order:
+3. **Install Required Dependencies:**  
 ```bash
-python libraries.py
-python node_grid.py
+pip install -r requirements.txt
+```
+
+---
+
+## **Running the Project**
+
+### **Phase 1: Path Planning Algorithms**  
+
+#### **Option 1: Backend (Algorithm Comparison)**  
+```bash
 python algorithms.py
-python Gui.py
-python main.py
 ```
+- Generates performance comparison results.  
+- Creates `algorithms_results.zip` containing summaries and visualizations.  
+- Displays comparison tables in the terminal.  
 
-### 🔄 Running Options
-
-#### Option 1: Algorithm Comparison (Backend)
-Run `algorithms.py` to:
-- Generate performance comparison of all algorithms
-- Create `algorithms_results.zip` containing summary and visualizations
-- Display comparison table in terminal
-
-#### Option 2: Interactive GUI (Frontend)
-Run `main.py` to:
-- Launch interactive GUI
-- Select specific algorithms to visualize
-- View real-time execution results
-- Compare selected algorithms' performance
-
-### 📂 Output Structure
-- `algorithm_outputs/`: Main output directory containing:
-  - Algorithm execution videos
-  - Path visualization images
-  - Exploration process visualizations
-  - Performance statistics
-
-### 🎯 Features
-- Multiple algorithm implementations (BFS, DFS, UCS, IDS, Greedy, A*, Hill Climbing, Simulated Annealing)
-- Real-time visualization
-- Performance metrics comparison
-- Interactive GUI interface
-
----
-
-## 📋 Phase 2: Reinforcement Learning Navigation
-
-### Overview
-An implementation of reinforcement learning for autonomous navigation in a simulated environment.
-
-### 🎮 Running the Simulation
-1. Execute the main script:
+#### **Option 2: Interactive GUI**  
 ```bash
 python main.py
 ```
+- Launches an interactive GUI.  
+- Allows users to select and visualize specific algorithms.  
+- Displays execution results and performance metrics.  
 
-2. Observe the agent learning process in real-time
+### **Phase 2: Reinforcement Learning**  
 
-### 📊 Output
-- `learning_report.csv`: Contains detailed statistics about the agent's learning process including:
-  - Episode information
-  - Rewards earned
-  - Learning progress
-  - Performance metrics
+#### **Running the RL Simulation**  
+```bash
+python main.py
+```
+- Starts the Q-Learning agent in the grid environment.  
+- Displays real-time training progress and visualization.  
 
-### 🎯 Features
-- Real-time agent visualization
-- Learning progress tracking
-- Performance analytics
-- Environment interaction simulation
+#### **Output Reports:**  
+- `learning_report.csv`: Contains detailed metrics per episode, including:  
+   - Steps per episode  
+   - Total rewards  
+   - Success status  
 
 ---
 
-## 🏗 Project Structure
+## **Output Structure**
+
 ```
 ├── phase1/
-│   ├── algorithms.py   # Path planning algorithms
-│   ├── gui.py         # GUI implementation
-│   ├── node_grid.py   # Grid system
-│   ├── main.py        # Main GUI application
-│   ├── libraries.py   # Required dependencies
+│   ├── algorithms.py     # Path planning algorithms
+│   ├── gui.py            # GUI implementation
+│   ├── node_grid.py      # Grid system setup
+│   ├── main.py           # Main GUI application
+│   ├── libraries.py      # Required dependencies
+│   ├── algorithm_outputs/ 
+│       ├── videos/       # Algorithm execution videos
+│       ├── images/       # Path visualization images
+│       ├── stats/        # Performance statistics
+
 ├── phase2/
-│   ├── main.py        # main running app
-│   ├── agent.py       # Agent implementation
-│   ├── environment.py # Environment setup
-│   ├── visualization.py # gui
+│   ├── main.py           # Main RL application
+│   ├── agent.py          # Q-Learning Agent logic
+│   ├── environment.py    # Environment setup
+│   ├── visualization.py  # Real-time visualization
+│   ├── learning_report.csv  # Training metrics output
+
+├── requirements.txt      # Required dependencies
+├── README.md             # Project documentation
 ```
 
-## 🔍 Requirements
-- Python 3.x
-- NumPy
-- Matplotlib
-- OpenCV
-- Tkinter
-- Imageio
-- Pygame (for Phase 2)
+---
 
-## 👥 Contributors
-- Anas Ahmad 
-- Ahmed Fouda 
-- Amin Gamal
-- Mohamed ehab
+## **Key Features**
 
-## 📝 Note
-This project is part of the CSAI 301 course curriculum, focusing on implementing and comparing different approaches to autonomous navigation.
+- **Phase 1:**  
+   - Multiple path planning algorithms implemented: *BFS, DFS, UCS, IDS, Greedy, A\*, Hill Climbing, Simulated Annealing*.  
+   - Real-time visualization of algorithm performance.  
+   - Performance metrics comparison via analytics reports.  
 
+- **Phase 2:**  
+   - Implementation of **Q-Learning** for autonomous navigation.  
+   - Dynamic agent visualization using **Pygame**.  
+   - Comprehensive training analytics and CSV report generation.  
+
+---
+
+## **Requirements**
+
+- Python 3.x  
+- NumPy  
+- Matplotlib  
+- OpenCV  
+- Tkinter  
+- Imageio  
+- Pygame  
+
+---
+
+## **Contributors**
+
+- **Anas Ahmad**  
+- **Ahmed Fouda**  
+- **Amin Gamal**  
+- **Mohamed Ehab**  

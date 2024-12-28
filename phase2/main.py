@@ -1,14 +1,14 @@
 import pygame
 from agent import Agent
-from environment import Environment
+from enviroment import Environment
 from visualization import Visualizer
 
 # Pygame initialization
 pygame.init()
 
 # Screen settings
-GRID_SIZE = 25  # 25x25 grid
-CELL_SIZE = 20  # Each cell is 20x20 pixels
+GRID_SIZE = 20  # 25x25 grid
+CELL_SIZE = 30  # Each cell is 20x20 pixels
 WIDTH, HEIGHT = GRID_SIZE * CELL_SIZE, GRID_SIZE * CELL_SIZE
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Q-Learning Visualization")

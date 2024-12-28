@@ -26,7 +26,7 @@ class Visualizer:
         pygame.draw.rect(self.screen, color, (x * self.cell_size, y * self.cell_size, self.cell_size, self.cell_size))
 
     def draw_q_values(self, q_table):
-        font = pygame.font.SysFont(None, 16)
+        font = pygame.font.SysFont(None, 14)
         for x in range(self.grid_size):
             for y in range(self.grid_size):
                 state = (x, y)

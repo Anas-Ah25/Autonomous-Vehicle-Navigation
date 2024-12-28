@@ -6,123 +6,115 @@ This project consists of two phases:
 
 ---
 
-## **How It Works**  
+## **📋 Phase 1: Path Planning Algorithms**
 
-The project is divided into two main phases, each focusing on a distinct approach to autonomous navigation.  
-
-### **Phase 1: Path Planning Algorithms**  
-1. **Algorithm Selection:** Users can choose from multiple algorithms (*BFS, DFS, UCS, IDS, Greedy, A\*, Hill Climbing, or Simulated Annealing*) via a GUI interface.  
-2. **Pathfinding Process:** The selected algorithm runs on a grid layout, with real-time visualization showing the exploration process and node traversal.  
-3. **Output:** The final path, along with explored nodes, is displayed as images or videos.  
-4. **Analytics:** Performance metrics such as **execution time** and **memory usage** are provided for algorithm comparison.  
-
-### **Phase 2: Reinforcement Learning**  
-1. **Training:** The agent learns to navigate an obstacle-filled grid using **Q-Learning**.  
-2. **Real-Time Visualization:** The learning process is displayed dynamically using **Pygame**, showing the agent's exploration and decision-making.  
-3. **Output:** Metrics such as **success rate**, **average rewards**, and **steps per episode** are logged and exported in a CSV file.  
+### **Overview**  
+An interactive system for **visualizing and comparing different pathfinding algorithms** through a GUI interface. The system allows users to select specific algorithms and observe their behavior in real-time on a grid-based environment.
 
 ---
 
-## **Prerequisites**  
+### **🛠 Setup & Installation**
 
-- **Python 3.12**  
-- **Tkinter** (GUI for Phase 1)  
-- **Matplotlib** (Visualizations)  
-- **NumPy** (Algorithm Implementation)  
-- **Imageio** (Video Rendering for Phase 1)  
-- **Pygame** (Visualization for Phase 2)  
-
----
-
-## **Installation**
-
-1. **Clone the Repository:**  
-```bash
-git clone https://github.com/Anas-Ah25/Autonomous-Vehicle-Navigation.git
-```
-
-2. **Navigate to the Project Directory:**  
-```bash
-cd Autonomous-Vehicle-Navigation
-```
-
-3. **Install Required Dependencies:**  
+1. **Install Required Dependencies:**  
 ```bash
 pip install -r requirements.txt
 ```
 
----
-
-## **Running the Project**
-
-### **Phase 1: Path Planning Algorithms**  
-
-#### **Option 1: Backend (Algorithm Comparison Report)**  
-```bash
-python algorithms.py
-```
-- Generates performance comparison results.  
-- Creates `algorithms_results.zip` containing summaries and visualizations.  
-- Displays comparison tables in the terminal.  
-
-#### **Option 2: Interactive GUI**  
-```bash
-python main.py
-```
-- Launches an interactive GUI.  
-- Allows users to select and visualize specific algorithms.  
-- Displays execution results and performance metrics.  
-
-#### **If You Encounter Issues in Phase 1**  
-If errors occur while running the app, execute the files manually in the following order:
-
-1. **Libraries:** Ensure all dependencies are loaded correctly:  
+2. **Run Files in the Following Order (if issues arise):**  
 ```bash
 python libraries.py
-```
-
-2. **Node Grid:** Initialize the grid system:  
-```bash
 python node_grid.py
-```
-
-3. **Algorithms:** Load the pathfinding algorithms:  
-```bash
 python algorithms.py
-```
-
-4. **GUI:** Start the graphical interface:  
-```bash
 python gui.py
+python main.py
 ```
 
-5. **Main:** Run the main application:  
+---
+
+### **🔄 Running Options**
+
+#### **Option 1: Algorithm Comparison (Backend)**  
+Run `algorithms.py` to:  
+- Generate performance comparison of all algorithms.  
+- Create `algorithms_results.zip` containing summaries and visualizations.  
+- Display a comparison table in the terminal.
+
+#### **Option 2: Interactive GUI (Frontend)**  
+Run `main.py` to:  
+- Launch the **interactive GUI**.  
+- Select specific algorithms to visualize.  
+- View real-time execution results.  
+- Compare selected algorithms' performance.
+
+---
+
+### **📂 Output Structure**
+- `algorithm_outputs/`: Main output directory containing:  
+   - **Algorithm execution videos**  
+   - **Path visualization images**  
+   - **Exploration process visualizations**  
+   - **Performance statistics**  
+
+---
+
+### **🎯 Features**
+- Multiple algorithm implementations (*BFS, DFS, UCS, IDS, Greedy, A\*, Hill Climbing, Simulated Annealing*).  
+- Real-time visualization of algorithm execution.  
+- Comparison of performance metrics (e.g., execution time, explored nodes).  
+- User-friendly **interactive GUI interface**.
+
+---
+---
+## **📋 Phase 2: Reinforcement Learning Navigation**
+
+### **Overview**  
+An implementation of **Q-Learning-based Reinforcement Learning (RL)** for autonomous navigation in a simulated grid environment. The agent learns to navigate efficiently while avoiding obstacles and reaching a goal state.
+
+---
+
+### **🛠 Setup & Installation**
+
+1. **Install Required Dependencies:**  
+```bash
+pip install -r requirements.txt
+```
+
+2. **Run the Simulation:**  
 ```bash
 python main.py
 ```
 
-This step-by-step execution ensures all dependencies and files are properly initialized before launching the application.
+3. **Observe Real-Time Visualization:**  
+- The agent's learning behavior will be displayed on the screen.  
+- Metrics will update live during each episode.
 
 ---
 
-### **Phase 2: Reinforcement Learning**  
+### **📊 Output**
+- **`learning_report.csv`:** A detailed report containing:  
+   - **Episode Number**  
+   - **Steps Taken per Episode**  
+   - **Total Rewards Earned**  
+   - **Success/Failure Status**  
 
-#### **Running the RL Simulation**  
-```bash
-python main.py
-```
-- Starts the Q-Learning agent in the grid environment.  
-- Displays real-time training progress and visualization.  
-
-#### **Output Reports:**  
-- `learning_report.csv`: Contains detailed metrics per episode, including:  
-   - Steps per episode  
-   - Total rewards  
-   - Success status  
+- **Statistics Screen:** After training, a final screen displays:  
+   - Total Episodes  
+   - Average Steps per Episode  
+   - Average Reward per Episode  
+   - Success Rate  
+   - Total Training Time  
 
 ---
 
-## **Output Structure**
+### **🎯 Features**
+- Real-time **visualization of the learning process** using Pygame.  
+- Adaptive learning parameters (`alpha`, `gamma`, `epsilon`).  
+- Post-training analytics through **`learning_report.csv`**.  
+- Visualization of agent behavior and policy convergence.
+
+---
+
+## **🏗 Project Structure**
 
 ```
 ├── phase1/
@@ -149,20 +141,19 @@ python main.py
 
 ---
 
-## **Key Features**
+## **🔍 Requirements**
 
-### **Phase 1:**  
-- Multiple path planning algorithms (*BFS, DFS, UCS, IDS, Greedy, A\*, Hill Climbing, Simulated Annealing*).  
-- Real-time visualization of algorithm performance.  
-- Performance metrics comparison via analytics reports.  
+- **Python 3.x**  
+- **NumPy**  
+- **Matplotlib**  
+- **OpenCV**  
+- **Tkinter**  
+- **Imageio**  
+- **Pygame**  
 
-### **Phase 2:**  
-- Implementation of **Q-Learning** for autonomous navigation.  
-- Dynamic agent visualization using **Pygame**.  
-- Comprehensive training analytics and CSV report generation.  
 ---
 
-## **Contributors**
+## **👥 Contributors**
 
 - **Anas Ahmad**  
 - **Ahmed Fouda**  
@@ -170,3 +161,9 @@ python main.py
 - **Mohamed Ehab**  
 
 ---
+
+## **📝 Notes**
+
+- **Phase 1:** Focused on comparing and visualizing **pathfinding algorithms** with static search strategies.  
+- **Phase 2:** Explored **dynamic learning behavior** through **Q-Learning** in a grid environment.  
+- Performance analytics and visualizations are provided for both phases.  

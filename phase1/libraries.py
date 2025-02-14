@@ -5,6 +5,7 @@ import imageio
 import sys
 import time
 import tkinter as tk
+from tkinter import ttk
 from random import choice, random
 from math import exp
 from itertools import count

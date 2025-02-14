@@ -13,7 +13,7 @@ class AlgorithmSelectionGUI:
         self.algorithms = algorithms
 
         self.root.geometry("800x500")
-        self.root.title("Select Algorithm")
+        self.root.title("Select Algorithm ")
 
         self.bg_image = Image.open("background.jpeg").resize((800, 500), Image.LANCZOS)
         self.bg_photo = ImageTk.PhotoImage(self.bg_image)
